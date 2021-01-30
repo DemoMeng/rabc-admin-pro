@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hlw.manage.system.mapper.HlwManageLogMapper">
+    <insert id="add">
+        INSERT INTO hlw_manage_log ( ip, description, operator, operator_name, create_date, operate_account, operator_role, result )
+        VALUES ( #{dto.ip}, #{dto.description}, #{dto.operator}, #{dto.operatorName}, #{dto.createDate},#{dto.operateAccount}, #{dto.operatorRole}, #{dto.result} )
+    </insert>
+
+    <select id="searchRole" resultType="com.hlw.common.model.vo.system.SearchVo">
+        SELECT operator_role name FROM hlw_manage_log GROUP BY operator_role
+    </select>
+
+    <select id="searchUser" resultType="com.hlw.common.model.vo.system.SearchVo">
+        SELECT operator_name name FROM hlw_manage_log GROUP BY operator_name
+    </select>
+    <select id="getAllPage" resultType="com.hlw.common.model.vo.system.LogListVo">
+        SELECT id,description,operator_name,create_date AS create_time,operate_account,operator_role,result FROM  hlw_manage_log
+        where true
+        <if test="dto.start != null">
+            <![CDATA[ and create_date >= #{dto.start}]]>
+        </if>
+        <if test="dto.end != null">
+            <![CDATA[ and #{dto.start} >= create_date]]>
+        </if>
+         <if test="dto.roleName != null">
+             and operator_role LIKE concat('%',#{dto.roleName},'%')
+         </if>
+        <if test="dto.userName != null">
+            and
+            (
+                operator_name LIKE concat('%',#{dto.userName},'%')
+                OR
+                operate_account LIKE concat('%',#{dto.userName},'%')
+            )
+        </if>
+        ORDER BY create_date DESC
+    </select>
+
+
+</mapper>

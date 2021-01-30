@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hlw.manage.system.mapper.HlwManageRoleMapper">
+
+
+    <select id="getAllPage" resultType="com.hlw.common.model.vo.system.RoleVo">
+        select * from hlw_manage_role where del_flag = 0
+        <if test="dto.keyword != null and dto.keyword != ''">
+            and name like concat('%',#{dto.keyword},'%')
+        </if>
+    </select>
+    <select id="getByUserId" resultType="com.hlw.common.model.vo.system.CurrentRoleVo">
+        SELECT
+            r.*
+        FROM
+            hlw_manage_user_role ur
+            LEFT JOIN hlw_manage_role r ON ur.role_id = r.id
+        WHERE
+            ur.user_id = #{current}
+        ORDER BY r.id
+    </select>
+
+</mapper>

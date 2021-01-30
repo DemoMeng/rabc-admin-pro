@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hlw.manage.system.mapper.HlwManageMenuMapper">
+
+    <resultMap id="join" type="com.hlw.common.model.vo.system.RoleMenuEchoVo">
+        <result column="id" property="id"/>
+        <result column="p_id" property="pId"/>
+        <result column="name" property="name"/>
+        <result column="belong_type" property="belongType"/>
+        <collection property="sons" ofType="com.hlw.common.model.vo.system.RoleMenuEchoVo">
+            <result column="son_id" property="id"/>
+            <result column="son_parent_id" property="pId"/>
+            <result column="son_name" property="name"/>
+            <result column="son_belong_type" property="belongType"/>
+        </collection>
+    </resultMap>
+
+    <select id="getMenuByRoleId" resultType="java.lang.String">
+        SELECT
+            concat(m.id, m.name)
+        FROM
+            hlw_manage_role_menu rm
+            LEFT JOIN hlw_manage_menu m ON rm.menu_id = m.id
+        WHERE
+            rm.role_id = #{roleId}
+    </select>
+
+    <select id="getAllList" resultType="com.hlw.common.model.vo.system.MenuListVo">
+        SELECT
+            m.id,
+            m.parent_id,
+            m.name,
+            m.sort,
+            m.href,
+            m.permission,
+            m.route,
+            m.create_date,
+            m.belong_type,
+            CASE
+                WHEN m.parent_id = 0 THEN "/"
+                ELSE c.name
+            END parent_name
+        FROM hlw_manage_menu m
+        LEFT JOIN hlw_manage_menu c ON c.id = m.parent_id
+        WHERE m.del_flag = 0
+        <if test="dto.type != null ">
+            AND m.belong_type = #{dto.type}
+        </if>
+    </select>
+    <select id="getParentMenu" resultType="com.hlw.common.model.vo.system.MenuListVo">
+        SELECT
+            id,
+            parent_id,
+            name,
+            sort,
+            href,
+            permission,
+            icon,
+            route,
+            create_by,
+            create_date,
+            update_by,
+            update_date,
+            remarks,
+            del_flag
+        FROM
+            hlw_manage_menu
+        WHERE
+            del_flag = 0
+        <if test="type != null">
+            AND belong_type = #{type}
+        </if>
+
+    </select>
+    <select id="getAllMenus" resultType="com.hlw.manage.system.entity.HlwManageMenu">
+        select m.* from hlw_manage_role_menu rm
+            LEFT JOIN hlw_manage_menu m ON rm.menu_id = m.id
+        WHERE role_id IN
+        <foreach collection="roleIdList" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        AND m.del_flag = 0
+        AND m.parent_id != 0
+        AND m.belong_type != 5
+        AND m.belong_type != 4
+        GROUP BY m.id
+    </select>
+    <select id="getAllMenusParentId" resultType="java.lang.Long">
+        SELECT m.parent_id FROM hlw_manage_role_menu rm
+                        LEFT JOIN hlw_manage_menu m ON rm.menu_id = m.id
+        WHERE role_id IN
+        <foreach collection="roleIdList" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        AND m.del_flag = 0
+        AND m.parent_id != 0
+        AND m.belong_type = 2
+        GROUP BY m.parent_id
+        ORDER BY m.parent_id
+    </select>
+    <select id="getLastMenu" resultType="com.hlw.common.model.vo.system.MenuInitVo">
+        SELECT m.* FROM hlw_manage_role_menu rm
+        LEFT JOIN hlw_manage_menu m ON rm.menu_id = m.id
+        WHERE role_id IN
+        <foreach collection="roleIdList" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        AND m.del_flag = 0
+        AND m.parent_id != 0
+        AND m.parent_id = #{id}
+        AND m.belong_type != 5
+        AND m.belong_type != 4
+        GROUP BY m.id
+    </select>
+    <select id="getChildByParentId" resultType="com.hlw.common.model.vo.system.MenuChildListVo">
+        SELECT
+            id,
+            parent_id,
+            name,
+            href,
+            permission,
+            belong_type,
+            route
+        FROM
+            hlw_manage_menu
+        WHERE
+            parent_id = #{id}
+            AND del_flag = 0
+    </select>
+    <select id="getFirstAndSecondMenu" resultMap="join">
+        select
+        p.id,
+        p.parent_id as p_id,
+        p.name as name,
+        p.belong_type,
+        s.id as son_id,
+        s.name as son_name,
+        s.belong_type as son_belong_type,
+        s.parent_id as son_parent_id
+        from hlw_manage_menu p
+        left join hlw_manage_menu s ON p.id = s.parent_id
+        where p.belong_type = 1 and p.del_flag = 0
+        <if test="flag ==false">
+            AND p.id != 16
+        </if>
+    </select>
+
+    <select id="getThirdAndFourMenu" resultMap="join">
+        select
+            p.id,
+            p.parent_id as p_id,
+            p.name as name,
+            p.belong_type,
+            s.id as son_id,
+            s.name as son_name,
+            s.belong_type as son_belong_type,
+            s.parent_id as son_parent_id
+        from hlw_manage_menu p
+        left join hlw_manage_menu s ON p.id = s.parent_id
+        where p.del_flag = 0
+        AND p.parent_id = #{id}
+    </select>
+
+
+</mapper>

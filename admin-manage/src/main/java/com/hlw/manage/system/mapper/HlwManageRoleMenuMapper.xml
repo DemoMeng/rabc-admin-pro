@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hlw.manage.system.mapper.HlwManageRoleMenuMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hlw.manage.system.entity.HlwManageRoleMenu">
+        <result column="role_id" property="roleId" />
+        <result column="menu_id" property="menuId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        role_id, menu_id
+    </sql>
+
+    <insert id="saveRoleMenu">
+        INSERT INTO hlw_manage_role_menu(role_id, menu_id) VALUES
+        <foreach collection="list" item="item" separator="," close=";">
+            (#{roleId},#{item})
+        </foreach>
+    </insert>
+
+    <delete id="removeByRoleId">
+        DELETE FROM hlw_manage_role_menu WHERE role_id = #{id}
+    </delete>
+
+</mapper>

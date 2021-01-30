@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/admin-generator/admin-generator.iml" filepath="$PROJECT_DIR$/admin-generator/admin-generator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/admin-common/hlw-common.iml" filepath="$PROJECT_DIR$/admin-common/hlw-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/admin-generator/hlw-generator.iml" filepath="$PROJECT_DIR$/admin-generator/hlw-generator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/admin-manage/hlw-manage.iml" filepath="$PROJECT_DIR$/admin-manage/hlw-manage.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rabc-admin.iml" filepath="$PROJECT_DIR$/rabc-admin.iml" />
+    </modules>
+  </component>
+</project>

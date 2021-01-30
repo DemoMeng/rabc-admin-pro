@@ -1,0 +1,59 @@
+server:
+  port: 3141
+
+spring:
+  profiles:
+    include: redis-dev
+  datasource:
+    master:
+      password: adminadmin
+      url: jdbc:mysql://localhost:3306/hlw_manage_admin?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&autoReconnect=true&serverTimezone=Asia/Shanghai
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      username: root
+      #type: com.alibaba.druid.pool.DruidDataSource
+    cluster:
+      - key: manage
+        password: 123
+        url: jdbc:mysql://XXXX:3306/XXXX?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&autoReconnect=true&serverTimezone=Asia/Shanghai
+        idle-timeout: 20000
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        username: hlw197
+        #type: com.alibaba.druid.pool.DruidDataSource
+        #type: com.zaxxer.hikari.HikariDataSource
+      - key: open
+        password: 123
+        url: jdbc:mysql://XXXXX:3306/XXXX?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        username: root
+        #type: com.alibaba.druid.pool.DruidDataSource
+        #type: com.zaxxer.hikari.HikariDataSource
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+#时间格式化处理后返回
+
+
+  main:
+    allow-bean-definition-overriding: true
+  #不解析freemarker路径针对前后端分离项目
+  freemarker:
+    check-template-location: false
+
+mybatis-plus:
+  mapper-locations: classpath*:com/hlw/manage/**/mapper/*.xml
+  type-aliases-package: com.hlw.manage.**.entity
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+swagger:
+  enable: true
+
+my:
+  jwt:
+    secret: HLW-MANAGE
+  token:
+    expire: 86400
+  roleMenu:
+    expire: 518400
+logging:
+  config: classpath:logback.xml

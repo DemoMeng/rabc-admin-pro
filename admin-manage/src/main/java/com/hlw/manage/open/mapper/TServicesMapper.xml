@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hlw.manage.open.mapper.TServicesMapper">
+
+    <select id="getList" resultType="com.hlw.common.model.vo.open.ServicesListVo">
+        SELECT
+            s.id,
+            s.name,
+            s.service_groupid AS group_id,
+            g.name AS group_name,
+            s.descript,
+            s.status
+        FROM t_services s
+        LEFT JOIN t_service_group g ON g.id = s.service_groupid
+        WHERE s.status = #{dto.status}
+        AND s.del_flag = 0
+        <if test="dto.groupId !=null and dto.groupId != ''">
+            AND s.service_groupid = #{dto.groupId}
+        </if>
+        ORDER BY s.create_time DESC
+    </select>
+
+</mapper>
